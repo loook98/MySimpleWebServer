@@ -5,9 +5,9 @@ using namespace std;
 /*
 内存模型：
 begin---------read--------write--------end
-begin-read: prependable
-read-write: readable
-begin-end: writalbe
+begin-read: prependable  ----[begin, read)
+read-write: readable     ----[read, write)  表示buffer中可读取的空间
+begin-end: writalbe      ----               表示buffer中可写入的空间
 */
 
 Buffer::Buffer(int initBuffSize) : buffer(initBuffSize), readPos(0), writePos(0) {}

@@ -106,7 +106,9 @@ void Log::init(int level = 1, const char* path, const char* suffix,
     }
 }
 
-/* 写日志 */
+/* 写日志 
+   生成日志，放入阻塞队列中。
+*/
 void Log::write(int level, const char *format, ...) {
     struct timeval now = {0, 0};
     gettimeofday(&now, nullptr);
@@ -142,7 +144,7 @@ void Log::write(int level, const char *format, ...) {
         assert(fp != nullptr);
     }
 
-    //向文件中互斥写日志
+    //向文件中互斥写日志（同步是直接写，异步还是先放入阻塞队列）
     {
         unique_lock<mutex> locker(mtx);
         lineCount++;
@@ -204,7 +206,9 @@ void Log::flush() {
     fflush(fp);
 }
 
-/* 异步持续写日志 */
+/* 异步持续写日志 
+   真正将日志写入文件的函数。
+*/
 //每个日志完成前，将阻塞队列加锁，避免读写混乱
 void Log::asyncWrite() {
     string str = "";
@@ -220,7 +224,9 @@ Log* Log::instance() {
     return &obj;
 }
 
-/* 写线程回调函数，异步写日志 */
+/* 写线程回调函数，异步写日志。
+   调用asyncWrite，将日志从阻塞队列中取出，写入文件。
+*/
 void Log::flushLogThread() {
     Log::instance()->asyncWrite();
 }

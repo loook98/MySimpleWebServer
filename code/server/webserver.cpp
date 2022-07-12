@@ -156,7 +156,9 @@ void WebServer::closeConnect(HttpConnect* client)
     client->closeConnect();
 }
 
-/* 为连接注册事件和设置计时器 */
+/* 为连接注册事件和设置计时器 
+    dealListen()函数中用到
+*/
 void WebServer::addClient(int fd, sockaddr_in addr)
 {
     assert(fd > 0);
@@ -193,7 +195,7 @@ void WebServer::dealListen()
     } while (listenEvent & EPOLLET);
 }
 
-/* 将读函数和参数用std::bind绑定，加入线程池的任务队列 */
+/* 将读函数onRead和参数用std::bind绑定，加入线程池的任务队列 */
 void WebServer::dealRead(HttpConnect* client)
 {
     assert(client);
@@ -202,7 +204,7 @@ void WebServer::dealRead(HttpConnect* client)
     ThreadPool::instance()->addTask(std::bind(&WebServer::onRead, this, client));
 }
 
-/* 将写吧函数和参数用std::bind绑定，加入线程池的任务队列 */
+/* 将写函数onWrite和参数用std::bind绑定，加入线程池的任务队列 */
 void WebServer::dealWrite(HttpConnect* client)
 {
     assert(client);
@@ -219,7 +221,9 @@ void WebServer::extentTime(HttpConnect* client)
         timer->adjust(client->getfd(), timeoutMs);
 }
 
-/* 读函数：先接收再处理 */
+/* 读函数：先接收再处理（调用onProcess） 
+    会在dealRead中绑定好参数，加入线程池的任务队列
+*/
 void WebServer::onRead(HttpConnect* client)
 {
     assert(client);
@@ -263,7 +267,7 @@ void WebServer::onWrite(HttpConnect* client)
     {
         if (client->isKeepAlive())
         {
-            onProcess(client);
+            onProcess(client); //这里在干啥 ???? TODO
             return;
         }
     }

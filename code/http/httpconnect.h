@@ -35,7 +35,7 @@ public:
     int getPort() const {return addr.sin_port;}
     const char* getIP() const {return inet_ntoa(addr.sin_addr);}
 
-    bool process(); //处理buffer中的报文，生成响应报文，写入另一个buffer。
+    bool process(); //解析buffer中的报文，生成响应报文，写入另一个buffer。
 
     int toWriteBytes()
     {

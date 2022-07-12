@@ -126,6 +126,8 @@ void HeapTimer::clear()
     heap.clear();
 }
 
+//调用tick()函数，将超时的定时器执行回调函数，然后删除。
+//然后计算堆顶元素的超时时间，返回该时间。
 int HeapTimer::getNextTick()
 {
     //处理堆顶计时器，若超时执行回调再删除

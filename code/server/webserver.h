@@ -30,7 +30,7 @@ public:
     
     ~WebServer();
 
-    void start();
+    void start(); //服务器的主循环（事件循环）
 
 private:
     bool initSocket();
@@ -64,7 +64,7 @@ private:
 
     unique_ptr<HeapTimer> timer;
     unique_ptr<Epoller> epoller;
-    unordered_map<int, HttpConnect> users;
+    unordered_map<int, HttpConnect> users; //连接的套接字的fd对应一个HttpConnect类，会把这个HttpConnect类的指针传给线程池中的线程，进行数据的处理。
 };
 
 #endif

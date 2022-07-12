@@ -19,7 +19,7 @@ typedef Clock::time_point TimeStamp;
 //定时器结点
 struct TimerNode 
 {
-    int id; //连接套接字描述符
+    int id; //用 连接套接字描述符 作为一个节点的id
     TimeStamp expires; //到期时间
     TimeoutCallBack cb; //回调函数
     //重载<，到期时间近的排在前面
@@ -44,16 +44,16 @@ public:
     //增加定时器
     void add(int id, int timeOut, const TimeoutCallBack& cb);
 
-    //回收空间
+    //回收空间。在析构函数中调用，堆构成堆的底层数据结构clear()函数。
     void clear();
 
-    //定时器计时，到期执行回调（从堆顶开始处理）
+    //定时器计时，到期时执行的 回调函数（从堆顶开始处理过期定时器，即若到期调用定期器的cb函数）
     void tick();
 
-    //弹出最近的一个定时器
+    //弹出最近的一个定时器。tick()中调用
     void pop();
 
-    //返回最近的到期时间
+    //返回最近的到期时间。即返回堆顶元素还有多久到期。在设置epoll_wait的超时时间前调用。
     int getNextTick();
 
 private:
@@ -68,7 +68,7 @@ private:
     //数组模拟堆
     std::vector<TimerNode> heap;
 
-    //记录每个定时器的下标
+    //记录每个定时器的下标。 map<连接套接字描述符，在vector中的位置>
     std::unordered_map<int, size_t> ref;
 };
 

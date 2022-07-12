@@ -19,7 +19,9 @@ public:
         return &threadpool;
     }
 
-    /* 回调函数：从线程池的任务队列中选一个任务处理 */
+    /* 回调函数：从线程池的任务队列中选一个任务处理 
+        就相当于消费者
+    */
     static void callback(ThreadPool* pool)
     {
         while(true)
@@ -52,13 +54,17 @@ public:
         //初始化时开辟所有线程，无任务就阻塞
         for (int i = 0; i < threadNum; i ++)
         {
+            //在这里创建线程
             //线程分离，主线程不用负责回收子线程资源
             thread(callback, this).detach();
         }
     }
 
     /* 添加任务 */
-    //传入方法和参数打包后的函数对象，&&表示右值引用
+    // 传入方法和参数打包后的函数对象，&&表示右值引用
+    // 就相当于生产者。
+    // 没有空余位置可以生产时就直接返回了。那这不会出现添加失败问题吗 ？？？？？ C语言版的没有空余位置会返回fasle,但在主程序调用时也没用到返回值。 
+    // github上tinywebserver的一个issue(https://github.com/qinguoyi/TinyWebServer/issues/127)： “我猜测这样做的原因是因为放任务是由主线程完成的，如果等待队列有位置再放入会阻塞主线程，从而影响程序运行？”
     template<typename F>
     void addTask(F&& task)
     {

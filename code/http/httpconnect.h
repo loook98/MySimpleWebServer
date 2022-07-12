@@ -15,6 +15,8 @@
 
 using namespace std;
 
+//对外主要调用这个类，httprequest和httpresponse类都是在这个类中使用的。
+//处理一个报文的流程 read() ---> process() ---> write()
 class HttpConnect
 {
 public:
@@ -23,8 +25,8 @@ public:
 
     void init(int sockfd, const sockaddr_in& addr);
 
-    ssize_t read(int* saveErrno);
-    ssize_t write(int* saveErrno);
+    ssize_t read(int* saveErrno); //报文读入buffer,等待处理
+    ssize_t write(int* saveErrno); //将buffer中的响应报文发出
 
     void closeConnect();
 
@@ -33,7 +35,7 @@ public:
     int getPort() const {return addr.sin_port;}
     const char* getIP() const {return inet_ntoa(addr.sin_addr);}
 
-    bool process();
+    bool process(); //处理buffer中的报文，生成响应报文，写入另一个buffer。
 
     int toWriteBytes()
     {

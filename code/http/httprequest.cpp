@@ -9,6 +9,7 @@ using namespace std;
 
 const char CRLF[] = "\r\n";
 
+//这个函数在干啥？？？？？ TODO
 vector<string> getFiles(string dir)
 {
     vector<string> files;
@@ -41,6 +42,7 @@ vector<string> getFiles(string dir)
 	return files;
 }
 
+//这应该是往那个记录文件列表的json文件里写东西
 void write_json(string file, Json::Value root)
 {
     std::ostringstream os;
@@ -151,7 +153,9 @@ HTTP_CODE HttpRequest::parse(Buffer& buffer)
     return NO_REQUEST;
 }
 
-/* 解析地址 */
+/* 解析地址 
+    只在parse()函数中调用了。
+*/
 void HttpRequest::parsePath()
 {
     if (path == "/") path = "/index.html";
@@ -261,7 +265,9 @@ int HttpRequest::convertHex(char ch)
     return ch;
 }
 
-/* 解析urlEncoded类型数据 */
+/* 解析urlEncoded类型数据 ， 就是解析POST请求消息体内容是 登录信息（用户名和密码） 的情况。
+content-type为application/x-www-form-urlencoded
+*/
 void HttpRequest::parseFromUrlEncoded()
 {
     if (body.size() == 0) return;
@@ -308,6 +314,9 @@ void HttpRequest::parseFromUrlEncoded()
     }
 }
 
+/*解析FormData数据类型，也就是消息体为上传的文件
+Content-Type为 multipart/form-data
+*/
 void HttpRequest::parseFormData()
 {
     if (body.size() == 0) return;
@@ -319,12 +328,12 @@ void HttpRequest::parseFormData()
     // 解析文件信息
     st = body.find("filename=\"", ed) + strlen("filename=\"");
     ed = body.find("\"", st);
-    fileInfo["filename"] = body.substr(st, ed - st);
+    fileInfo["filename"] = body.substr(st, ed - st); //把文件名存入fileInfo中
     
     // 解析文件内容，文件内容以\r\n\r\n开始
     st = body.find("\r\n\r\n", ed) + strlen("\r\n\r\n");
     ed = body.find(boundary, st) - 2; // 文件结尾也有\r\n
-    string content = body.substr(st, ed - st);
+    string content = body.substr(st, ed - st); //文件的内容存在这个局部变量content里，下边新建个文件写入。
 
     ofstream ofs;
     // 如果文件分多次发送，应该采用app，同时为避免重复上传，应该用md5做校验

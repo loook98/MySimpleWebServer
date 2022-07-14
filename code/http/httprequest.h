@@ -66,8 +66,8 @@ private:
     bool linger; //是否是长连接
     size_t contentLen; //消息体的长度
     unordered_map<string, string> header; //存储从报文中解析出的请求头的“键-值”对。
-    unordered_map<string, string> post;   //应该是post消息体中存放的登录信息吧
-    unordered_map<string, string> fileInfo; //记录post消息体内上传的文件的信息
+    unordered_map<string, string> post;   //存放post消息体中存放的登录信息
+    unordered_map<string, string> fileInfo; //存放post消息体内上传的文件的信息
 
     static const unordered_set<string> DEFAULT_HTML;
     static const unordered_map<string, int> DEFAULT_HTML_TAG;

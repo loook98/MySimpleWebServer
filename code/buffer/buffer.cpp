@@ -110,8 +110,8 @@ void Buffer::ensureWritable(size_t len)
 
 ssize_t Buffer::readfd(int fd, int* saveErrno)
 {
-    char newbuffer[65536];
-    struct iovec iov[2];
+    char newbuffer[65536]; //开这么大的空间是为了 如果本buffer的容器里放不了读的这么多东西，那就先临时存入newBuffer数组内，然后在放入本buffer（需要扩容）
+    struct iovec iov[2]; //
     const size_t writable = writableBytes();
 
     iov[0].iov_base = beginPtr() + writePos;

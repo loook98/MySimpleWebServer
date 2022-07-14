@@ -239,16 +239,18 @@ void WebServer::onRead(HttpConnect* client)
     onProcess(client);
 }
 
-/* 处理函数：判断读入的请求报文是否完整，决定是继续监听读还是监听写 */
+/* 处理函数：判断读入的请求报文是否完整，决定是继续监听读还是监听写 
+    
+*/
 //如果请求不完整，继续读，如果请求完整，则根据请求内容生成相应的响应报文，并发送
 //oneshot需要再次监听
 void WebServer::onProcess(HttpConnect* client)
 {
-    if (client->process())
+    if (client->process()) //消息读完整，并已解析完成放入缓冲区中，开始监听可写事件。
     {
         epoller->modfd(client->getfd(), connEvent | EPOLLOUT);
     }
-    else
+    else  //消息没读完整，继续监听可读事件
     {
         epoller->modfd(client->getfd(), connEvent | EPOLLIN);
     }

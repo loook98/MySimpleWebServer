@@ -67,7 +67,9 @@ void HttpResponse::init(const string& srcDir, string& path, bool isKeepAlive, in
     mmFileStat = {0};
 }
 
-/* 制作响应报文 */
+/* 制作响应报文 
+   httpconnect类中就是调用这个函数。
+*/
 void HttpResponse::makeResponse(Buffer& buffer)
 {
     if (stat((srcDir + path).data(), &mmFileStat) < 0 || S_ISDIR(mmFileStat.st_mode))

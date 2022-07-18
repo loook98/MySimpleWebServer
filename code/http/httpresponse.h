@@ -40,12 +40,12 @@ private:
     string path;
     string srcDir;
 
-    char* mmFile;
+    char* mmFile;  //mmap映射文件得到的指针
     struct stat mmFileStat;
 
-    static const unordered_map<string, string> SUFFIX_TYPE;
-    static const unordered_map<int, string> CODE_STATUS;
-    static const unordered_map<int, string> CODE_PATH;
+    static const unordered_map<string, string> SUFFIX_TYPE;  //map<文件后缀.xxx，对应的类型>
+    static const unordered_map<int, string> CODE_STATUS;    //map<错误码， 对应的描述信息>，例如<404, Not Found>
+    static const unordered_map<int, string> CODE_PATH;      //map<错误码， 对应的html文件>
 };
 
 #endif
